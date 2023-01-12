@@ -12,7 +12,20 @@ withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'test',
         sh 'docker login -u apurva09 -p $password'
 	}
     stage("Pushing Image to Docker Hub"){
-	     sh 'docker tag 1dbcb7da68c3 apurva09/facility:latest'
+	     sh 'docker tag facility apurva09/facility:latest'
 	   sh 'docker push apurva09/facility:latest'
     }
+stage("SSH Into Server") {
+def remote = [:]
+remote.name = 'VMububtu18.0'
+remote.host = '20.163.181.235'
+remote.user = 'azureuser'
+remote.password = 'Miracle@1234'
+remote.allowAnyHosts = true
 }
+	stage("Deploy"){
+sh 'docker rm -f facility||true'
+sh 'docker run -p 9001:9001 -d --name facility facility:latest'
+}
+}
+
